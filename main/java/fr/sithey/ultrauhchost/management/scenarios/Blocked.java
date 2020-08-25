@@ -1,0 +1,113 @@
+package fr.sithey.ultrauhchost.management.scenarios;
+
+import fr.sithey.ultrauhchost.Main;
+import fr.sithey.ultrauhchost.lib.CustomScenario;
+import fr.sithey.ultrauhchost.lib.ItemCreator;
+import fr.sithey.ultrauhchost.management.enumeration.Scenario;
+import fr.sithey.ultrauhchost.management.object.UPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Blocked extends CustomScenario implements Listener {
+
+    @Override
+    public String getName() {
+        return "Blocked";
+    }
+
+
+    @Override
+    public ItemStack getItem() {
+        List<String> textes = new ArrayList<>();
+        textes.add("§8§m--------------------------------------");
+        textes.add("");
+        StringBuilder newmsg = new StringBuilder(ChatColor.GRAY + "");
+        int i = 0;
+        for(String bout : Scenario.BLOCKED.getDescription().split(" ")){
+            newmsg.append(bout).append(" ");
+            if(i == 8){
+                textes.add(newmsg.toString());
+                newmsg = new StringBuilder(ChatColor.GRAY + "");
+                i = 0;
+            }
+            i++;
+        }
+        if(!newmsg.toString().equals(ChatColor.GRAY + "")){
+            textes.add(newmsg.toString());
+        }
+        textes.add("");
+        textes.add("§8§m--------------------------------------");
+        return new ItemCreator(Material.STONE).setName(getName() + " : " + Scenario.BLOCKED.isEnabled()).setAmount(Scenario.BLOCKED.isEnabled() ? 1 : 0).setLores(textes).getItem();
+    }
+
+    @Override
+    public void onStart() {
+        Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
+    }
+
+    @Override
+    public void scatterPlayer(Player player) {
+
+    }
+
+    @Override
+    public void onPvP() {
+
+    }
+
+    @Override
+    public void onMeetup() {
+
+    }
+
+    @Override
+    public void onDeath(Player player, Player killer) {
+
+    }
+
+    @Override
+    public String getPath() {
+        return "blocked";
+    }
+    private Map<UPlayer, List<Block>> cache = new HashMap<>();
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBreak(BlockBreakEvent event){
+            UPlayer up = UPlayer.getUPlayer(event.getPlayer().getUniqueId());
+        if (cache.containsKey(up)){
+            if (cache.get(up).contains(event.getBlock())) {
+                event.setCancelled(true);
+            }
+        }else{
+            cache.put(up, new ArrayList<>());
+        }
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onPlace(BlockPlaceEvent event){
+        UPlayer up = UPlayer.getUPlayer(event.getPlayer().getUniqueId());
+        if (cache.containsKey(up)){
+            cache.get(up).add(event.getBlock());
+        }else{
+            cache.put(up, new ArrayList<>());
+            cache.get(up).add(event.getBlock());
+        }
+    }
+
+}

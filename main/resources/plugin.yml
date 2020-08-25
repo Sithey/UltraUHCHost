@@ -1,0 +1,47 @@
+name: UltraUHCHost
+version: 5.6
+author: Sithey
+main: fr.sithey.ultrauhchost.Main
+commands:
+  bypass:
+    aliases: force
+  heal:
+    aliases: h
+  finishuhc:
+    aliases:
+      - stop
+      - stopuhc
+      - rl
+      - reload
+  mutechat:
+    aliases:
+      - muteall
+      - chatmute
+  setnumber:
+  tpto:
+    aliases: tpa
+  rtp:
+    aliases: randomtp
+  sethost:
+  team:
+    aliases: teams
+  spec:
+    aliases: spectator
+  helpop:
+  rules:
+    aliases:
+      - config
+      - rule
+      - uhc
+      - info
+      - rules
+  scenarios:
+    aliases:
+      - sc
+      - scenario
+  lastresort:
+  saveitems:
+  twitter:
+  revive:
+  latescatter:
+  moveteam:
